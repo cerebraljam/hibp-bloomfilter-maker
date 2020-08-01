@@ -24,6 +24,7 @@ def configuration():
             'content': config['content'],
             'content_date': config['date'],
             'testing_mode': config['testing_mode']['enable'],
+            'testing_limit': config['testing_mode']['limit'],
             'blacklist': config['blacklist']
         }
 conf = configuration()
@@ -78,6 +79,7 @@ def readfile(source, hashes):
     with open(source) as fp:
         line = fp.readline()
         cnt = [0 for x in range(len(conf['partitions']))]
+        count = 0
 
         partition = -1
         higher = 0
@@ -87,7 +89,7 @@ def readfile(source, hashes):
             splited = line.split(":")
             freq = int(splited[1])
 
-            if partition == -1 or not (higher > freq and freq > lower):
+            if partition == -1 or not (higher > freq and freq >= lower):
                 partition, higher, lower = getPartition(freq)
                 print("partition: {}, Upper bound: {}, current hash frequency: {}, lower bound: {}".format(partition, higher, freq, lower))
 
@@ -95,6 +97,11 @@ def readfile(source, hashes):
             learn_hash(splited[0], partition, hashes)
             line = fp.readline()
             cnt[partition] += 1
+            count+=1
+
+            if conf['testing_mode'] == True and count >= conf['testing_limit']:
+                break
+
 
     print("total count per partition: {}".format(cnt))
 
