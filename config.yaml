@@ -3,7 +3,7 @@ partitions:
 - bitsize: 21
   fp_odds: 18945
   label: worst
-  maximum: 99999999
+  maximum: 999999999
   minimum: 10000
 - bitsize: 25
   fp_odds: 65906
