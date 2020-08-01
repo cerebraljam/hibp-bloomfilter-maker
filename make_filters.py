@@ -38,9 +38,8 @@ def getPartition(count):
 
         if conf['partitions'][i]['maximum'] > count and count >= conf['partitions'][i]['minimum']:
             return i, conf['partitions'][i]['maximum'], conf['partitions'][i]['minimum']
-        else:
-            print("{} > {} >= {} == No Match".format(conf['partitions'][i]['maximum'], count, conf['partitions'][i]['minimum']))
-            raise
+
+    return 0, 0, 0
 
 def process_word(word, size, hashes):
     offsets = []
