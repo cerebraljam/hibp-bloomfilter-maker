@@ -65,9 +65,9 @@ def testfile(source, hashes):
         partition = -1
         higher = 0
         lower = 0
-        successes = []
-        notfounds = []
-        losts = []
+        success = 0
+        notfound = 0
+        lost = 0
         print("Testing source file %s" % source)
 
         while line and cnt < conf['testing_limit']:
@@ -83,29 +83,29 @@ def testfile(source, hashes):
                 found = read_offset(i, p["offsets"], hashes)
 
                 if found == True and partition == i:
-                    successes.append(hash)
+                    success += 1
                 elif found == False and partition == i:
-                    notfounds.append(hash)
+                    notfound += 1
                     print("FAILED: hash %s was supposed to be found in partition %d. " % (hash, partition))
                 elif found == True and partition != i:
-                    losts.append(hash)
+                    lost += 1
                     print("FAILED: hash %s was found in the wrong partition %d. " % (hash, partition))
 
             line = fp.readline()
             cnt += 1
 
     print("total count: {}".format(cnt))
-    print("successes: %d" % len(successes))
-    print("not found: %d" % len(notfounds))
-    print("losts: %d" % len(losts))
+    print("success: %d" % successes)
+    print("not found: %d" % notfounds)
+    print("lost: %d" % losts)
 
 
 def testblacklist(source, hashes):
     with open(source) as fp:
         partition = -1
         cnt = 0
-        successes = []
-        notfounds = []
+        success = 0
+        notfound = 0
 
         for i in range(len(conf['partitions'])):
             if conf['partitions'][i]['label'] == "blacklist":
@@ -127,9 +127,9 @@ def testblacklist(source, hashes):
                 found = read_offset(partition, p["offsets"], hashes)
 
                 if found == True:
-                    successes.append(hash)
+                    success += 1
                 else:
-                    notfounds.append(hash)
+                    notfound += 1
                     print("FAILED: hash %s was supposed to be found in partition %d. " % (hash, partition))
 
                 line = fp.readline()
@@ -138,8 +138,8 @@ def testblacklist(source, hashes):
             print("no blacklist partition defined in config.yaml")
 
     print("total count: {}".format(cnt))
-    print("successes: %d" % len(successes))
-    print("not found: %d" % len(notfounds))
+    print("success: %d" % successes)
+    print("not found: %d" % notfounds)
 
 if os.path.exists(source):
     for p in conf['partitions']:
