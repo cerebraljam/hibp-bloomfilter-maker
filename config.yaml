@@ -1,0 +1,43 @@
+nb_hashes: 5
+partitions:
+- bitsize: 21
+  fp_odds: 18945
+  label: worst
+  maximum: 99999999
+  minimum: 10000
+- bitsize: 25
+  fp_odds: 65906
+  label: suck
+  maximum: 10000
+  minimum: 1000
+- bitsize: 28
+  fp_odds: 7847
+  label: bad
+  maximum: 1000
+  minimum: 100
+- bitsize: 31
+  fp_odds: 6483
+  label: common
+  maximum: 100
+  minimum: 10
+- bitsize: 32
+  fp_odds: 482
+  label: rare
+  maximum: 10
+  minimum: 3
+- bitsize: 32
+  fp_odds: 192
+  label: low
+  maximum: 3
+  minimum: 1
+- bitsize: 20
+  fp_odds: 192
+  label: blacklist
+  maximum: 1
+  minimum: -1
+testing_mode:
+  enable: true
+  limit: 1000
+content: hibp
+date: 20200801
+blacklist: blacklist.txt

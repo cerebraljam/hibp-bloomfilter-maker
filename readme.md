@@ -15,15 +15,22 @@ Partitions:
 
 The common, rare and low filters are quite big compared to the first ones because of the high number of hashes in these categories. Using smaller filters would increase the risks of collisions, therefore of false positives.
 
+# Python Libraries Requirement
+```
+# pip3 install bitarray
+# pip3 install PyYAML
+```
+
 # Usage
 First, download the HIBP list from the the site above, then uncompress it.
 The `ordered-by-count` version is preferred.
+
 
 ##  Dry Run
 
 Start the conversion of the txt file into the filters
 ```
-$ python make_ilters.py pwned-passwords-sha1-ordered-by-count-v6.sample.txt
+$ python3 make_filters.py pwned-passwords-sha1-ordered-by-count-v6.sample.txt
 ```
 
 The output should look like this
@@ -69,7 +76,7 @@ Saving filter files...
 These are not exhaustive tests (I am not testing if random values trigger false positives), but to confirm that the filters work, run the following command:
 
 ```
-$ python test_filters.py
+$ python3 test_filters.py
 ```
 
 the result should look like this
@@ -104,7 +111,7 @@ testing_mode:
 
 then restart the full process
 ```
-time python make_ilters.py pwned-passwords-sha1-ordered-by-count-v6.txt
+time python3 make_filters.py pwned-passwords-sha1-ordered-by-count-v6.txt
 ```
 
 # What to do with these filters?
