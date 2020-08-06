@@ -76,6 +76,7 @@ def testfile(source, hashes):
             freq = int(splited[1])
             partition, higher, lower = getPartition(freq)
 
+
             for i in range(len(bit_arrays)):
                 size = 2**conf['partitions'][i]['bitsize']
                 p = process_word(hash, size, conf['nb_hashes'])
@@ -95,51 +96,47 @@ def testfile(source, hashes):
             cnt += 1
 
     print("total count: {}".format(cnt))
-    print("success: %d" % successes)
-    print("not found: %d" % notfounds)
-    print("lost: %d" % losts)
+    print("success: %d" % success)
+    print("not found: %d" % notfound)
+    print("lost: %d" % lost)
 
 
-def testblacklist(source, hashes):
+def test_wordlist(source, hashes):
     with open(source) as fp:
-        partition = -1
         cnt = 0
-        success = 0
-        notfound = 0
+        successes = []
+        notfounds = []
+        line = fp.readline()
 
-        for i in range(len(conf['partitions'])):
-            if conf['partitions'][i]['label'] == "blacklist":
-                partition = i
+        while line and cnt < conf['testing_limit']:
+            line = line.rstrip()
+            hash = hashlib.sha1(line.encode('utf-8')).hexdigest().upper()
 
-        if partition >= 0:
-            size = 2**conf['partitions'][partition]['bitsize']
-
-            print("Testing blacklist file: %s. Partition %d " % (source, partition))
-
-            line = fp.readline()
-            while line:
-                line = line.rstrip()
-                hash = hashlib.sha1(line.encode('utf-8')).hexdigest()
-                print(line, hash)
-
+            found_somewhere = False
+            for i in range(len(bit_arrays)):
+                size = 2**conf['partitions'][i]['bitsize']
                 p = process_word(hash, size, conf['nb_hashes'])
 
-                found = read_offset(partition, p["offsets"], hashes)
+                found = read_offset(i, p["offsets"], hashes)
 
                 if found == True:
-                    success += 1
-                else:
-                    notfound += 1
-                    print("FAILED: hash %s was supposed to be found in partition %d. " % (hash, partition))
+                    # print("word {} (hash: {}) found in filter {}: {}".format(line, hash, i, conf['partitions'][i]['label']))
+                    successes.append({"word": line, "partition": i})
+                    found_somewhere = True
+            if not found_somewhere:
+                # print("FAILED: word {} (hash {}) was not found.".format(line, hash))
+                notfounds.append({"word": line, "partition": -1})
 
-                line = fp.readline()
-                cnt += 1
-        else:
-            print("no blacklist partition defined in config.yaml")
+            line = fp.readline()
+            cnt += 1
 
     print("total count: {}".format(cnt))
-    print("success: %d" % successes)
-    print("not found: %d" % notfounds)
+    print("success count:", len(successes), "First 10:")
+    for i in successes[:10]:
+        print(i)
+    print("not found count:", len(notfounds), "First 10:")
+    for i in notfounds[:10]:
+        print(i)
 
 if os.path.exists(source):
     for p in conf['partitions']:
@@ -158,5 +155,9 @@ if os.path.exists(source):
         else:
             print("could not load filter %s" % knowledge_filenames[i])
 
+    print("Testing source file:", source)
     testfile(source, conf['nb_hashes'])
-    testblacklist(conf['blacklist'], conf['nb_hashes'])
+    print("\nTesting blacklist file:", conf['blacklist'])
+    test_wordlist(conf['blacklist'], conf['nb_hashes'])
+    print("\nTesting custom test file:", 'plain_test_list.txt')
+    test_wordlist('plain_test_list.txt', conf['nb_hashes'])
