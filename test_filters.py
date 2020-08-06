@@ -68,14 +68,12 @@ def testfile(source, hashes):
         success = 0
         notfound = 0
         lost = 0
-        print("Testing source file %s" % source)
 
         while line and cnt < conf['testing_limit']:
             splited = line.split(":")
             hash = splited[0]
             freq = int(splited[1])
             partition, higher, lower = getPartition(freq)
-
 
             for i in range(len(bit_arrays)):
                 size = 2**conf['partitions'][i]['bitsize']
@@ -96,9 +94,9 @@ def testfile(source, hashes):
             cnt += 1
 
     print("total count: {}".format(cnt))
-    print("success: %d" % success)
-    print("not found: %d" % notfound)
-    print("lost: %d" % lost)
+    print("success:", success)
+    print("not found:", notfound)
+    print("lost:", lost)
 
 
 def test_wordlist(source, hashes):
@@ -121,21 +119,21 @@ def test_wordlist(source, hashes):
 
                 if found == True:
                     # print("word {} (hash: {}) found in filter {}: {}".format(line, hash, i, conf['partitions'][i]['label']))
-                    successes.append({"word": line, "partition": i})
+                    successes.append({"word": line, "partition": i, "label": conf['partitions'][i]['label']})
                     found_somewhere = True
             if not found_somewhere:
                 # print("FAILED: word {} (hash {}) was not found.".format(line, hash))
-                notfounds.append({"word": line, "partition": -1})
+                notfounds.append({"word": line, "partition": -1, "label": ""})
 
             line = fp.readline()
             cnt += 1
 
     print("total count: {}".format(cnt))
-    print("success count:", len(successes), "First 10:")
-    for i in successes[:10]:
+    print("success count:", len(successes), "First {}:".format(min(len(successes),50)))
+    for i in successes[:min(len(successes),50)]:
         print(i)
-    print("not found count:", len(notfounds), "First 10:")
-    for i in notfounds[:10]:
+    print("not found count:", len(notfounds), "First {}:".format(min(len(notfounds),50)))
+    for i in notfounds[:min(len(notfounds),50)]:
         print(i)
 
 if os.path.exists(source):
@@ -155,9 +153,11 @@ if os.path.exists(source):
         else:
             print("could not load filter %s" % knowledge_filenames[i])
 
-    print("Testing source file:", source)
+
+    print("Testing hash source file:", source)
     testfile(source, conf['nb_hashes'])
-    print("\nTesting blacklist file:", conf['blacklist'])
-    test_wordlist(conf['blacklist'], conf['nb_hashes'])
-    print("\nTesting custom test file:", 'plain_test_list.txt')
-    test_wordlist('plain_test_list.txt', conf['nb_hashes'])
+
+    # This is for custom wordlist testing
+    for f in [conf['blacklist'], '10-million-password-list-top-100.txt']:
+        print("\nTesting plain list of words file:", f)
+        test_wordlist(f, conf['nb_hashes'])

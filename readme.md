@@ -114,6 +114,55 @@ then restart the full process
 time python3 make_filters.py pwned-passwords-sha1-ordered-by-count-v6.txt
 ```
 
+# More testing with known bad passwords
+
+Daniel Miessler have few nice list for testing: https://github.com/danielmiessler/SecLists/tree/master/Passwords/Common-Credentials
+
+I copied the https://github.com/danielmiessler/SecLists/blob/master/Passwords/Common-Credentials/10-million-password-list-top-100.txt in this folder and is being used by the `test_filters.py` when executed:
+
+```
+$ python test_filters.py pwned-passwords-sha1-ordered-by-count-v6.sample.txt
+Loading existing knowledge file hibp_20200801_21bits_worst.bloomfilter
+Loading existing knowledge file hibp_20200801_25bits_suck.bloomfilter
+Loading existing knowledge file hibp_20200801_28bits_bad.bloomfilter
+Loading existing knowledge file hibp_20200801_31bits_common.bloomfilter
+Loading existing knowledge file hibp_20200801_32bits_rare.bloomfilter
+Loading existing knowledge file hibp_20200801_32bits_low.bloomfilter
+Loading existing knowledge file hibp_20200801_20bits_blacklist.bloomfilter
+Testing hash source file: pwned-passwords-sha1-ordered-by-count-v6.sample.txt
+total count: 10
+success: 10
+not found: 0
+lost: 0
+
+Testing plain list of words file: blacklist.txt
+total count: 1
+success count: 1 First 1:
+{'word': 'garbage', 'partition': 0, 'label': 'worst'}
+not found count: 0 First 0:
+
+Testing plain list of words file: 10-million-password-list-top-100.txt
+total count: 101
+success count: 101 First 50:
+{'word': '123456', 'partition': 0, 'label': 'worst'}
+{'word': 'password', 'partition': 0, 'label': 'worst'}
+{'word': '12345678', 'partition': 0, 'label': 'worst'}
+{'word': 'qwerty', 'partition': 0, 'label': 'worst'}
+{'word': '123456789', 'partition': 0, 'label': 'worst'}
+{'word': '12345', 'partition': 0, 'label': 'worst'}
+{'word': '1234', 'partition': 0, 'label': 'worst'}
+{'word': '111111', 'partition': 0, 'label': 'worst'}
+{'word': '1234567', 'partition': 0, 'label': 'worst'}
+{'word': 'dragon', 'partition': 0, 'label': 'worst'}
+{'word': '123123', 'partition': 0, 'label': 'worst'}
+{'word': 'baseball', 'partition': 0, 'label': 'worst'}
+... snip ...
+
+not found count: 0 First 0:
+```
+
+
+
 # What to do with these filters?
 
 Now that they are encoded, you can use them in your favorite custom app to check for hash values.
