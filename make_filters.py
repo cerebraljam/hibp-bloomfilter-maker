@@ -91,7 +91,7 @@ def readfile(source, hashes):
 
             if partition == -1 or not (higher > freq and freq >= lower):
                 partition, higher, lower = getPartition(freq)
-                print("partition: {}, Upper bound: {}, current hash frequency: {}, lower bound: {}".format(partition, higher, freq, lower))
+                #print("partition: {}, Upper bound: {}, current hash frequency: {}, lower bound: {}".format(partition, higher, freq, lower))
 
 
             learn_hash(splited[0], partition, hashes)
