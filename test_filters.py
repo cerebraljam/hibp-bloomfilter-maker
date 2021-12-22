@@ -69,7 +69,7 @@ def testfile(source, hashes):
         notfound = 0
         lost = 0
 
-        while line and cnt < conf['testing_limit']:
+        while line: # and cnt < conf['testing_limit']:
             splited = line.split(":")
             hash = splited[0]
             freq = int(splited[1])

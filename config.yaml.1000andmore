@@ -1,6 +1,6 @@
 nb_hashes: 5
 partitions:
-- bitsize: 31
+- bitsize: 32
   fp_odds: 18945
   label: 1000andmore
   maximum: 9999999999
@@ -11,8 +11,8 @@ partitions:
   maximum: 1
   minimum: -1
 testing_mode:
-  enable: false
+  enable: true
   limit: 1000
 content: hibp
-date: 20201125
+date: 20211222
 blacklist: blacklist.txt
